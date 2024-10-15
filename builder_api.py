@@ -6,7 +6,11 @@ import configurator.configurator as conf
 app = Flask(__name__)
 
 
-@app.route("/build", methods=['POST'])
+## FOR TESTING
+# curl -X GET http://127.0.0.1:5000/build -H "Content-Type: application/json" -d '{"price": "50000","cfg":"Gaming"}'
+
+
+@app.route("/build", methods=['GET'])
 def build():
     data = request.get_json()
 
@@ -24,6 +28,21 @@ def build():
 def all_mb():
     c = conf.Configurator()
     return c.getNamesMB()
+
+## FOR TEST
+# curl -X GET http://127.0.0.1:5000/configurator -H "Content-Type: application/json" -d '{"MB": 5}'
+
+@app.route("/configurator", methods=["GET"]) # TESTING...
+def configurator():
+    data = request.get_json()
+
+    if not data:
+        data = {}
+    else:
+        data = dict(data)
+
+    c = conf.Configurator(data)
+    return c.setMB()
 
 if __name__ == '__main__':
     app.run(debug=True)
