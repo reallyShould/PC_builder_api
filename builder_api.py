@@ -30,7 +30,7 @@ def all_mb():
     return c.getNamesMB()
 
 ## FOR TEST
-# curl -X GET http://127.0.0.1:5000/configurator -H "Content-Type: application/json" -d '{"MB": 5}'
+# curl -X GET http://127.0.0.1:5000/configurator -H "Content-Type: application/json" -d '{"MB": 5, "CPU": 63, "GPU": 1}'
 
 @app.route("/configurator", methods=["GET"]) # TESTING...
 def configurator():
@@ -42,7 +42,7 @@ def configurator():
         data = dict(data)
 
     c = conf.Configurator(data)
-    return c.setMB()
+    return str(c.filters)
 
 if __name__ == '__main__':
     app.run(debug=True)

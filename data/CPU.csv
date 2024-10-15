@@ -1,4 +1,4 @@
-,cpuName,price,cpuMark,cpuValue,threadMark,threadValue,TDP,cores,socket,category,brnd
+id,cpuName,price,cpuMark,cpuValue,threadMark,threadValue,TDP,cores,socket,category,brnd
 39,AMD Ryzen 9 5950X,51979.2,46195,71.1,3498,5.38,105.0,16,AM4,Desktop,AMD
 53,Intel Core i9-12900KF,45838.4,41163,71.84,4217,7.36,241.0,8,LGA 1700,Desktop,Intel
 54,Intel Core i9-12900K,47996.0,41077,68.47,4209,7.02,241.0,8,LGA 1700,Desktop,Intel

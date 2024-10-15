@@ -1,4 +1,4 @@
-,Unnamed: 0,gpuName,G3Dmark,G2Dmark,price,gpuValue,TDP,testDate,category,brnd
+id,Unnamed: 0,gpuName,G3Dmark,G2Dmark,price,gpuValue,TDP,testDate,category,brnd
 0,0,GeForce RTX 3090 Ti,29094,1117,167999.2,13.85,341.0,2022,Unknown,NVIDIA
 1,1,GeForce RTX 3080 Ti,26887,1031,95999.2,22.41,310.0,2021,Desktop,NVIDIA
 2,2,GeForce RTX 3090,26395,999,139999.2,15.08,312.0,2020,Desktop,NVIDIA
