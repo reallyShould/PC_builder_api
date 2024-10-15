@@ -30,7 +30,7 @@ def all_mb():
     return c.getNamesMB()
 
 ## FOR TEST
-# curl -X GET http://127.0.0.1:5000/configurator -H "Content-Type: application/json" -d '{"MB": 5, "CPU": 63, "GPU": 1}'
+# curl -X GET http://127.0.0.1:5000/configurator -H "Content-Type: application/json" -d '{"MB": 5, "CPU": 63, "GPU": 1, "RAM": 0, "PSU": 0}'
 
 @app.route("/configurator", methods=["GET"]) # TESTING...
 def configurator():
@@ -43,6 +43,23 @@ def configurator():
 
     c = conf.Configurator(data)
     return str(c.filters)
+
+
+## FOR TEST
+# curl -X GET http://127.0.0.1:5000/filter_mb -H "Content-Type: application/json" -d '{"MB": "None", "CPU": 63, "GPU": "None", "RAM": "None", "PSU": "None"}'
+
+@app.route("/filter_mb", methods=["GET"])
+def filterMB():
+    data = request.get_json()
+
+    if not data:
+        data = {}
+    else:
+        data = dict(data)
+
+    c = conf.Configurator(data)
+    return str(c.getFiltredMB())
+
 
 if __name__ == '__main__':
     app.run(debug=True)

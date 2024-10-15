@@ -10,7 +10,7 @@ class Configurator:
             "socket":"None",
             "ram_type":"None",
             "power_pin":"None",
-            "TDP":0
+            "TDP":100
         }
         
         if req != {}:
@@ -30,32 +30,60 @@ class Configurator:
         if self.req["MB"] != "None":
             self.setMB()
         if self.req["CPU"] != "None":
-            self.setMB()
+            self.setCPU()
         if self.req["GPU"] != "None":
             self.setGPU()
+        if self.req["RAM"] != "None":
+            self.setRAM()
+        if self.req["PSU"] != "None":
+            self.setPSU()
 
     def setMB(self):
         mb = cons.mb_data.loc[cons.mb_data["id"] == self.req["MB"]]
         self.filters["socket"] = mb["socket"].values[0]
         self.filters["ram_type"] = mb["ramType"].values[0]
         self.filters["power_pin"] = mb["powerPin"].values[0]
-        return str(self.filters)
 
     def setCPU(self):
         cpu = cons.cpu_data.loc[cons.cpu_data["id"] == self.req["CPU"]]
         self.filters["socket"] = cpu["socket"].values[0]
         self.filters["TDP"] += int(cpu["TDP"].values[0])
-        return str(self.filters)
 
     def setGPU(self):
         gpu = cons.gpu_data.loc[cons.gpu_data["id"] == self.req["GPU"]]
         self.filters["TDP"] += int(gpu["TDP"].values[0])
 
-    def findRAM(self):
-        pass
+    def setRAM(self):
+        ram = cons.ram_data.loc[cons.ram_data["id"] == self.req["RAM"]]
+        self.filters["ram_type"] = ram["type"].values[0]
 
-    def findPSU(self):
-        pass
+    def setPSU(self):
+        psu = cons.psu_data.loc[cons.psu_data["id"] == self.req["PSU"]]
+        self.filters["TDP"] -= int(psu["power"].values[0])
+
+    def getFiltredMB(self):
+        if self.filters["socket"] != "None" and self.filters["ram_type"] != "None":
+            tmp_data = cons.mb_data.loc[
+                (cons.mb_data["ram_type"] == self.filters["ram_type"]) & 
+                (cons.mb_data["socket"] == self.filters["socket"])
+            ]
+        elif self.filters["socket"] != "None":
+            tmp_data = cons.mb_data.loc[
+                cons.mb_data["socket"] == self.filters["socket"]
+            ]
+        elif self.filters["ram_type"] != "None":
+            tmp_data = cons.mb_data.loc[
+                cons.mb_data["ram_type"] == self.filters["ram_type"]
+            ]
+        else:
+            tmp_data = cons.mb_data
+
+    
+        response = {}
+        for i in range(len(tmp_data)):
+            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
+        return str(response)
+
 
     def getIdByName(self): # for front
         pass
