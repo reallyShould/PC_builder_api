@@ -68,13 +68,9 @@ class Configurator:
                 (cons.mb_data["socket"] == self.filters["socket"])
             ]
         elif self.filters["socket"] != "None":
-            tmp_data = cons.mb_data.loc[
-                cons.mb_data["socket"] == self.filters["socket"]
-            ]
+            tmp_data = cons.mb_data.loc[cons.mb_data["socket"] == self.filters["socket"]]
         elif self.filters["ram_type"] != "None":
-            tmp_data = cons.mb_data.loc[
-                cons.mb_data["ram_type"] == self.filters["ram_type"]
-            ]
+            tmp_data = cons.mb_data.loc[cons.mb_data["ram_type"] == self.filters["ram_type"]]
         else:
             tmp_data = cons.mb_data
 
@@ -82,8 +78,45 @@ class Configurator:
         response = {}
         for i in range(len(tmp_data)):
             response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
-        return str(response)
+        return response
 
+    def getFiltredCPU(self):
+        if self.filters["socket"] != "None":
+            tmp_data = cons.cpu_data.loc[(cons.cpu_data["socket"] == self.filters["socket"])]
+        else:
+            tmp_data = cons.cpu_data
+
+        response = {}
+        for i in range(len(tmp_data)):
+            response[int(tmp_data["id"].values[i])] = tmp_data["cpuName"].values[i]
+        return response
+
+    def getFiltredRAM(self):
+        if self.filters["ram_type"] != "None":
+            tmp_data = cons.ram_data.loc[(cons.ram_data["type"] == self.filters["ram_type"])]
+        else:
+            tmp_data = cons.ram_data
+
+        response = {}
+        for i in range(len(tmp_data)):
+            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
+        return response
+    
+    def getFiltredGPU(self):
+        tmp_data = cons.gpu_data
+
+        response = {}
+        for i in range(len(tmp_data)):
+            response[int(tmp_data["id"].values[i])] = tmp_data["gpuName"].values[i]
+        return response
+
+    def getFiltredPSU(self):
+        tmp_data = cons.psu_data.loc[(cons.psu_data["power"] >=  self.filters["TDP"])]
+
+        response = {}
+        for i in range(len(tmp_data)):
+            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
+        return response
 
     def getIdByName(self): # for front
         pass

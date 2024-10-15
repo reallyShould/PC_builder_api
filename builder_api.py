@@ -48,17 +48,50 @@ def configurator():
 ## FOR TEST
 # curl -X GET http://127.0.0.1:5000/filter_mb -H "Content-Type: application/json" -d '{"MB": "None", "CPU": 63, "GPU": "None", "RAM": "None", "PSU": "None"}'
 
+## TRY EXCEPT HERE
+
 @app.route("/filter_mb", methods=["GET"])
 def filterMB():
     data = request.get_json()
-
-    if not data:
-        data = {}
-    else:
-        data = dict(data)
+    data = {} if not data else dict(data)
 
     c = conf.Configurator(data)
-    return str(c.getFiltredMB())
+    return jsonify(c.getFiltredMB())
+
+
+@app.route("/filter_cpu", methods=["GET"])
+def filterCPU():
+    data = request.get_json()
+    data = {} if not data else dict(data)
+
+    c = conf.Configurator(data)
+    return jsonify(c.getFiltredCPU())
+
+
+@app.route("/filter_ram", methods=["GET"])
+def filterRAM():
+    data = request.get_json()
+    data = {} if not data else dict(data)
+
+    c = conf.Configurator(data)
+    return jsonify(c.getFiltredRAM())
+
+@app.route("/filter_gpu", methods=["GET"])
+def filterGPU():
+    data = request.get_json()
+    data = {} if not data else dict(data)
+
+    c = conf.Configurator(data)
+    return jsonify(c.getFiltredGPU())
+
+
+@app.route("/filter_psu", methods=["GET"])
+def filterPSU():
+    data = request.get_json()
+    data = {} if not data else dict(data)
+
+    c = conf.Configurator(data)
+    return jsonify(c.getFiltredPSU())
 
 
 if __name__ == '__main__':
