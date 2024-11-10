@@ -6,10 +6,6 @@ import configurator.configurator as conf
 app = Flask(__name__)
 
 
-## FOR TESTING
-# curl -X GET http://127.0.0.1:5000/build -H "Content-Type: application/json" -d '{"price": "50000","cfg":"Gaming"}'
-
-
 @app.route("/build", methods=['GET'])
 def build():
     data = request.get_json()
@@ -24,13 +20,12 @@ def build():
     else:
         return jsonify({'error': 'No message provided'}), 400
 
+
 @app.route("/all_mb", methods=['GET']) # TESTING
 def all_mb():
     c = conf.Configurator()
     return c.getNamesMB()
 
-## FOR TEST
-# curl -X GET http://127.0.0.1:5000/configurator -H "Content-Type: application/json" -d '{"MB": 5, "CPU": 63, "GPU": 1, "RAM": 0, "PSU": 0}'
 
 @app.route("/configurator", methods=["GET"]) # TESTING...
 def configurator():
@@ -45,11 +40,7 @@ def configurator():
     return str(c.filters)
 
 
-## FOR TEST
-# curl -X GET http://127.0.0.1:5000/filter_mb -H "Content-Type: application/json" -d '{"MB": "None", "CPU": 63, "GPU": "None", "RAM": "None", "PSU": "None"}'
-
 ## TRY EXCEPT HERE
-
 @app.route("/filter_mb", methods=["GET"])
 def filterMB():
     data = request.get_json()
@@ -75,6 +66,7 @@ def filterRAM():
 
     c = conf.Configurator(data)
     return jsonify(c.getFiltredRAM())
+
 
 @app.route("/filter_gpu", methods=["GET"])
 def filterGPU():

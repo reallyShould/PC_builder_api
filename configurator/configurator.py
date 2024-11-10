@@ -64,13 +64,13 @@ class Configurator:
     def getFiltredMB(self):
         if self.filters["socket"] != "None" and self.filters["ram_type"] != "None":
             tmp_data = cons.mb_data.loc[
-                (cons.mb_data["ram_type"] == self.filters["ram_type"]) & 
+                (cons.mb_data["ramType"] == self.filters["ram_type"]) & 
                 (cons.mb_data["socket"] == self.filters["socket"])
             ]
         elif self.filters["socket"] != "None":
             tmp_data = cons.mb_data.loc[cons.mb_data["socket"] == self.filters["socket"]]
         elif self.filters["ram_type"] != "None":
-            tmp_data = cons.mb_data.loc[cons.mb_data["ram_type"] == self.filters["ram_type"]]
+            tmp_data = cons.mb_data.loc[cons.mb_data["ramType"] == self.filters["ram_type"]]
         else:
             tmp_data = cons.mb_data
 
