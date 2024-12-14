@@ -5,20 +5,29 @@ import configurator.configurator as conf
 
 app = Flask(__name__)
 
+@app.route("/")
+def star():
+    return "Hello"
 
-@app.route("/build", methods=['GET'])
+@app.route("/build", methods=['POST'])
 def build():
     data = request.get_json()
 
     if data and "price" in data and "cfg" in data:
-        price = int(data["price"])
+        price = data["price"]
         cfg = data["cfg"]
+
+        if not price or not price.isdigit():
+            return jsonify({'error': 'Invalid price value'}), 400
+
+        price = int(price)
         bld = builder.Build(sum_price=price, cfg=cfg)
         bld.build()
-        
+
         return jsonify(bld.get_json())
     else:
         return jsonify({'error': 'No message provided'}), 400
+
 
 
 @app.route("/all_mb", methods=['GET']) # TESTING
