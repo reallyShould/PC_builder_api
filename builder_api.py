@@ -16,12 +16,14 @@ def build():
     if data and "price" in data and "cfg" in data:
         price = data["price"]
         cfg = data["cfg"]
+        gpuCFG = data["gpu"]
+        cpuCFG = data["cpu"]
 
         if not price or not price.isdigit():
             return jsonify({'error': 'Invalid price value'}), 400
 
         price = int(price)
-        bld = builder.Build(sum_price=price, cfg=cfg)
+        bld = builder.Build(sum_price=price, cfg=cfg, gpuCFG=gpuCFG, cpuCfg=cpuCFG)
         bld.build()
 
         return jsonify(bld.get_json())
