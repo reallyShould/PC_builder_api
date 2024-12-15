@@ -132,7 +132,7 @@ class Build:
             to_price_GPU = dfGPU[(dfGPU['price'] > self.gpu_price[0]) & (dfGPU['price'] < self.gpu_price[1])]
         to_price_GPU.sort_values('gpuValue')
 
-        if self.mode == 'random':
+        if self.mode == 'Best of seven':
             randomTMP = random.randint(1, 7)
             gpu = to_price_GPU.iloc[[randomTMP]]
             while len(gpu['gpuName'].values[0]) < 4:
