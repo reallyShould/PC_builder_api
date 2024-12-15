@@ -2,7 +2,7 @@ import pandas as pd
 import random, os
 
 class Build:
-    def __init__(self, motherboard=None, cpu=None, gpu=None, psu=None, ram=None, sum_price=None, rom=None, cfg=None, mode='first', ID=None, gpuCFG='None', cpuCfg='None'):
+    def __init__(self, motherboard=None, cpu=None, gpu=None, psu=None, ram=None, sum_price=None, rom=None, cfg=None, mode='Best', ID=None, gpuCFG='Any', cpuCfg='Any'):
         self.motherboard_price = None
         self.cpu_price = None
         self.gpu_price = None
@@ -78,7 +78,7 @@ class Build:
             to_price_CPU = dfCPU[(dfCPU['price'] > self.cpu_price[0]) & (dfCPU['price'] < self.cpu_price[1])]
         to_price_CPU.sort_values('cpuValue')
 
-        if self.mode == 'random':
+        if self.mode == 'Best of seven':
             randomTMP = random.randint(1, 7)
             cpu = to_price_CPU.iloc[[randomTMP]]
             while len(cpu['cpuName'].values[0]) < 4:
