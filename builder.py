@@ -262,6 +262,7 @@ class Build:
                        )
 
     def get_json(self):
+        pc_price = round(float(self.cpu.price + self.gpu.price + self.motherboard.price + self.rom.price + self.psu.price + self.ram.price), 2)
         return {
             "cpu": {
                 "name": self.cpu.name,
@@ -320,8 +321,8 @@ class Build:
                 "config": self.cfg,
                 "mode": self.mode
             },
-            "other": float(self.other_price),        
-            "price": round(float(self.cpu.price + self.gpu.price + self.motherboard.price + self.rom.price + self.psu.price + self.ram.price), 2)
+            "other": float(self.sum_price - pc_price),        
+            "price": pc_price
         }
 
 
