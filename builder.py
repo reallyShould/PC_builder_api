@@ -321,7 +321,7 @@ class Build:
                 "config": self.cfg,
                 "mode": self.mode
             },
-            "other": float(self.sum_price - pc_price),        
+            "other": round(float(self.sum_price - pc_price)),        
             "price": pc_price
         }
 
