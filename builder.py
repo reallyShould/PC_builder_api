@@ -2,7 +2,7 @@ import pandas as pd
 import random, os
 
 class Build:
-    def __init__(self, motherboard=None, cpu=None, gpu=None, psu=None, ram=None, sum_price=None, rom=None, cfg=None, mode='first', ID=None, gpuCFG='None', cpuCfg='None'):
+    def __init__(self, motherboard=None, cpu=None, gpu=None, psu=None, ram=None, sum_price=None, rom=None, cfg=None, mode='Best', ID=None, gpuCFG='Any', cpuCfg='Any'):
         self.motherboard_price = None
         self.cpu_price = None
         self.gpu_price = None
@@ -72,13 +72,13 @@ class Build:
         dfCPU = pd.read_csv("data/CPU.csv")
         if self.cpuCFG == 'AMD':
             to_price_CPU = dfCPU[(dfCPU['price'] > self.cpu_price[0]) & (dfCPU['price'] < self.cpu_price[1]) & (dfCPU['brnd'] == 'AMD')]
-        elif self.cpuCFG == 'Intel':
+        elif self.cpuCFG == 'INTEL':
             to_price_CPU = dfCPU[(dfCPU['price'] > self.cpu_price[0]) & (dfCPU['price'] < self.cpu_price[1]) & (dfCPU['brnd'] == 'Intel')]
         else:
             to_price_CPU = dfCPU[(dfCPU['price'] > self.cpu_price[0]) & (dfCPU['price'] < self.cpu_price[1])]
         to_price_CPU.sort_values('cpuValue')
 
-        if self.mode == 'random':
+        if self.mode == 'Best of seven':
             randomTMP = random.randint(1, 7)
             cpu = to_price_CPU.iloc[[randomTMP]]
             while len(cpu['cpuName'].values[0]) < 4:
@@ -262,21 +262,22 @@ class Build:
                        )
 
     def get_json(self):
+        pc_price = round(float(self.cpu.price + self.gpu.price + self.motherboard.price + self.rom.price + self.psu.price + self.ram.price), 2)
         return {
             "cpu": {
                 "name": self.cpu.name,
                 "socket": self.cpu.socket,
-                "cores": int(self.cpu.cores),  # Cast to int
-                "tdp": int(self.cpu.tdp),      # Cast to int
-                "bench": int(self.cpu.mark),   # Cast to int
-                "price": float(self.cpu.price) # Cast to float
+                "cores": int(self.cpu.cores),
+                "tdp": int(self.cpu.tdp),
+                "bench": int(self.cpu.mark),
+                "price": float(self.cpu.price)
             },
             "gpu": {
                 "name": self.gpu.name,
-                "tdp": int(self.gpu.tdp),      # Cast to int
-                "bench3d": int(self.gpu.mark3D), # Cast to int
-                "bench2d": int(self.gpu.mark2D), # Cast to int
-                "price": float(self.gpu.price)   # Cast to float
+                "tdp": int(self.gpu.tdp),
+                "bench3d": int(self.gpu.mark3D),
+                "bench2d": int(self.gpu.mark2D),
+                "price": float(self.gpu.price)
             },
             "motherboard": {
                 "name": self.motherboard.name,
@@ -284,44 +285,44 @@ class Build:
                 "socket": self.motherboard.socket,
                 "chipset": self.motherboard.chipset,
                 "ramType": self.motherboard.ramType,
-                "ramSlots": int(self.motherboard.ramSlots), # Cast to int
-                "ramFreq": int(self.motherboard.ramFreq),   # Cast to int
-                "maxRam": int(self.motherboard.maxRam),     # Cast to int
+                "ramSlots": int(self.motherboard.ramSlots),
+                "ramFreq": int(self.motherboard.ramFreq),
+                "maxRam": int(self.motherboard.maxRam),
                 "powerPin": self.motherboard.powerPin,
-                "price": float(self.motherboard.price)      # Cast to float
+                "price": float(self.motherboard.price)
             },
             "ram": {
                 "name": self.ram.name,
                 "type": self.ram.type,
-                "count": int(self.ram.count),        # Cast to int
-                "capacity": int(self.ram.capacity),  # Cast to int
-                "freq": int(self.ram.freq),          # Cast to int
+                "count": int(self.ram.count),
+                "capacity": int(self.ram.capacity),  
+                "freq": int(self.ram.freq),          
                 "time": self.ram.timings,
                 "form": self.ram.formFactor,
-                "price": float(self.ram.price)       # Cast to float
+                "price": float(self.ram.price)       
             },
             "rom": {
                 "name": self.rom.name,
                 "type": self.rom.type,
-                "capacity": int(self.rom.capacity),  # Cast to int
-                "bench": int(self.rom.mark),         # Cast to int
-                "price": float(self.rom.price)       # Cast to float
+                "capacity": int(self.rom.capacity),  
+                "bench": int(self.rom.mark),         
+                "price": float(self.rom.price)       
             },
             "psu": {
                 "name": self.psu.name,
                 "form": self.psu.formFactor,
-                "power": int(self.psu.power),        # Cast to int
+                "power": int(self.psu.power),        
                 "fan": self.psu.fan,
                 "pin": self.psu.pin,
                 "gpuPin": self.psu.gpuPin,
-                "price": float(self.psu.price)       # Cast to float
+                "price": float(self.psu.price)       
             },
             "settings": {
                 "config": self.cfg,
                 "mode": self.mode
             },
-            "other": float(self.other_price),        # Cast to float
-            "price": round(float(self.cpu.price + self.gpu.price + self.motherboard.price + self.rom.price + self.psu.price + self.ram.price), 2)
+            "other": round(float(self.sum_price - pc_price), 1),        
+            "price": pc_price
         }
 
 
