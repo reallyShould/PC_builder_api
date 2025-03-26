@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import builder
 import configurator.configurator as conf
-
+from config import HOST, PORT
 
 app = Flask(__name__)
 
@@ -104,4 +104,4 @@ def filterPSU():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host=HOST, port=PORT)
