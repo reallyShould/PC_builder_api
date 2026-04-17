@@ -118,5 +118,5 @@ class Configurator:
             response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
         return response
 
-    def getIdByName(self): # for front
+    def getIdByName(self): # TODO Add get ID by name and get name by id
         pass

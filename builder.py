@@ -1,6 +1,8 @@
 import pandas as pd
 import random, os
 
+#TODO Complete code refactoring is required
+
 class Build:
     def __init__(self, motherboard=None, cpu=None, gpu=None, psu=None, ram=None, sum_price=None, rom=None, cfg=None, mode='Best', ID=None, gpuCFG='Any', cpuCfg='Any'):
         self.motherboard_price = None
@@ -68,7 +70,7 @@ class Build:
         self.psu_price = (int((self.sum_price / 100) * (self.PSU_per - 30)), int((self.sum_price / 100) * self.PSU_per))
         self.other_price = int((self.sum_price / 100) * self.Other_per)
     
-    def getCPUnMB(self):
+    def getCPUnMB(self): #TODO Make the code more readable if possible
         dfCPU = pd.read_csv("data/CPU.csv")
         if self.cpuCFG == 'AMD':
             to_price_CPU = dfCPU[(dfCPU['price'] > self.cpu_price[0]) & (dfCPU['price'] < self.cpu_price[1]) & (dfCPU['brnd'] == 'AMD')]
@@ -121,7 +123,7 @@ class Build:
                                        powerPin= mb['powerPin'].values[0],
                                        price= mb['price'].values[0])
 
-    def getGPU(self):
+    def getGPU(self): #TODO Make the code more readable if possible
         dfGPU = pd.read_csv("data/GPU.csv")
         if self.gpuCFG == 'NVIDIA':
             to_price_GPU = dfGPU[(dfGPU['price'] > self.gpu_price[0]) & (dfGPU['price'] < self.gpu_price[1]) & (dfGPU['brnd'] == 'NVIDIA')]
@@ -185,7 +187,7 @@ class Build:
                         rank=rom['rank'].values[0],
                         price=rom['price'].values[0])
         else:
-            print('Что то пошло не так')
+            print('Что то пошло не так') #TODO Check it
 
     def getTDP(self):
         open(f'{os.getcwd()}\\userdata\\{self.ID}\\TDP.txt', 'a+').write(str(self.cpu.tdp + self.gpu.tdp + 400))

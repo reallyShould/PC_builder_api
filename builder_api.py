@@ -38,13 +38,13 @@ def build():
 
 
 
-@app.route("/all_mb", methods=['GET']) # TESTING
+@app.route("/all_mb", methods=['GET']) # TODO Add all components
 def all_mb():
     c = conf.Configurator()
     return c.getNamesMB()
 
 
-@app.route("/configurator", methods=["GET"]) # TESTING...
+@app.route("/configurator", methods=["GET"]) # TODO Remember why this is needed
 def configurator():
     data = request.get_json()
 
@@ -57,7 +57,7 @@ def configurator():
     return str(c.filters)
 
 
-## TRY EXCEPT HERE
+# TODO TRY EXCEPT HERE
 @app.route("/filter_mb", methods=["GET"])
 def filterMB():
     data = request.get_json()
@@ -76,7 +76,7 @@ def filterCPU():
     return jsonify(c.getFiltredCPU())
 
 
-@app.route("/filter_ram", methods=["GET"])
+@app.route("/filter_ram", methods=["GET"]) #TODO Test it
 def filterRAM():
     data = request.get_json()
     data = {} if not data else dict(data)
@@ -85,7 +85,7 @@ def filterRAM():
     return jsonify(c.getFiltredRAM())
 
 
-@app.route("/filter_gpu", methods=["GET"])
+@app.route("/filter_gpu", methods=["GET"]) #TODO Test it
 def filterGPU():
     data = request.get_json()
     data = {} if not data else dict(data)
@@ -94,7 +94,7 @@ def filterGPU():
     return jsonify(c.getFiltredGPU())
 
 
-@app.route("/filter_psu", methods=["GET"])
+@app.route("/filter_psu", methods=["GET"]) #TODO Test it
 def filterPSU():
     data = request.get_json()
     data = {} if not data else dict(data)

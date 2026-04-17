@@ -1,2 +1,2 @@
 HOST = "0.0.0.0"
-PORT = 6324
+PORT = 5000 # Edit for your server
