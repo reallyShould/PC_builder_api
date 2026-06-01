@@ -83,7 +83,7 @@ class Build:
         if self.mode == 'Best of seven':
             randomTMP = random.randint(1, 7)
             cpu = to_price_CPU.iloc[[randomTMP]]
-            while len(cpu['cpuName'].values[0]) < 4:
+            while len(cpu['name'].values[0]) < 4:
                 randomTMP -= 1
         else:
             cpu = to_price_CPU.head(1)
@@ -92,7 +92,7 @@ class Build:
         except:
             pass
         
-        self.cpu = Cpu(name=cpu['cpuName'].values[0], 
+        self.cpu = Cpu(name=cpu['name'].values[0],
                        price=cpu['price'].values[0], 
                        mark=cpu['cpuMark'].values[0], 
                        tdp=cpu['TDP'].values[0], 
@@ -137,7 +137,7 @@ class Build:
         if self.mode == 'Best of seven':
             randomTMP = random.randint(1, 7)
             gpu = to_price_GPU.iloc[[randomTMP]]
-            while len(gpu['gpuName'].values[0]) < 4:
+            while len(gpu['name'].values[0]) < 4:
                 randomTMP -= 1
         else:
             gpu = to_price_GPU.head(1)
@@ -146,7 +146,7 @@ class Build:
             gpu = gpu.drop(columns='Unnamed: 0')
         except:
             pass
-        self.gpu = Gpu(name=gpu['gpuName'].values[0], 
+        self.gpu = Gpu(name=gpu['name'].values[0],
                        price=gpu['price'].values[0], 
                        mark3D=gpu['G3Dmark'].values[0], 
                        mark2D=gpu['G2Dmark'].values[0], 
@@ -173,14 +173,14 @@ class Build:
         except:
             pass
         if not dbl:
-            self.rom = Rom(name=rom['driveName'].values[0],
+            self.rom = Rom(name=rom['name'].values[0],
                         type=rom['type'].values[0],
                         capacity=rom['diskCapacity'].values[0],
                         mark=rom['diskMark'].values[0],
                         rank=rom['rank'].values[0],
                         price=rom['price'].values[0])
         elif dbl:
-            self.rom = Rom(name=rom['driveName'].values[0],
+            self.rom = Rom(name=rom['name'].values[0],
                         type=rom['type'].values[0],
                         capacity=rom['diskCapacity'].values[0],
                         mark=rom['diskMark'].values[0],

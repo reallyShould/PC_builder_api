@@ -6,7 +6,7 @@ from config import HOST, PORT
 app = Flask(__name__)
 
 @app.route("/")
-def star():
+def start():
     return "Hello"
 
 @app.route("/build", methods=['POST'])
@@ -101,6 +101,14 @@ def filterPSU():
 
     c = conf.Configurator(data)
     return jsonify(c.getFiltredPSU())
+
+@app.route("/get_id_by_name", methods=["GET"])
+def getIdByName():
+    data = request.get_json()
+    data = {} if not data else dict(data)
+
+    c = conf.Configurator(data)
+    return jsonify(c.getIdByName(name=data["name"]))
 
 
 if __name__ == '__main__':

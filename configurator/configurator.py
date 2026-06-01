@@ -1,5 +1,6 @@
 from . import constants as cons
 import pandas as pd
+from functools import reduce
 from flask import jsonify
 
 class Configurator:
@@ -13,7 +14,7 @@ class Configurator:
             "TDP":100
         }
         
-        if req != {}:
+        if len(req) > 1:
             self.setup()
         else:
             self.filtred = False
@@ -88,7 +89,7 @@ class Configurator:
 
         response = {}
         for i in range(len(tmp_data)):
-            response[int(tmp_data["id"].values[i])] = tmp_data["cpuName"].values[i]
+            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
         return response
 
     def getFiltredRAM(self):
@@ -107,7 +108,7 @@ class Configurator:
 
         response = {}
         for i in range(len(tmp_data)):
-            response[int(tmp_data["id"].values[i])] = tmp_data["gpuName"].values[i]
+            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
         return response
 
     def getFiltredPSU(self):
@@ -118,5 +119,24 @@ class Configurator:
             response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
         return response
 
-    def getIdByName(self): # TODO Add get ID by name and get name by id
-        pass
+    def getIdByName(self, name: str) -> int:
+        dfs_to_combine = [
+            df[["id", "name"]]
+            for df in [
+                cons.psu_data,
+                cons.ram_data,
+                cons.gpu_data,
+                cons.cpu_data,
+                cons.mb_data,
+                cons.rom_data,
+            ]
+        ]
+
+        data_all = pd.concat(dfs_to_combine, ignore_index=True).drop_duplicates()
+
+        result = data_all[data_all["name"].str.strip().str.lower() == name.strip().lower()]
+
+        if not result.empty:
+            return int(result["id"].iloc[0])
+
+        return -1

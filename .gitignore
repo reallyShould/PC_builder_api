@@ -3,3 +3,4 @@ venv
 api_example.py
 __pycache__
 .venv
+.idea/
