@@ -1,6 +1,6 @@
 PC_builder
 venv
-api_example.py
+.DS_Store
 __pycache__
 .venv
 .idea/

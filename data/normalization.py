@@ -29,3 +29,30 @@ for path in paths:
 
     df.to_csv(path, index=False)
     print(f"File {path} is ready.")
+
+
+cpu_df = pd.read_csv("data/CPU.csv")
+mb_df = pd.read_csv("data/MB.csv")
+
+if "ramType" in cpu_df.columns:
+    cpu_df = cpu_df.drop(columns=["ramType"])
+
+cpu_df.insert(len(cpu_df.columns), "ramType", "None")
+
+merged = cpu_df.reset_index().merge(
+    mb_df[["socket", "ramType"]], on="socket", suffixes=("_cpu", "_mb")
+)
+
+ram_mapping = (
+    merged.groupby("index")["ramType_mb"]
+    .apply(lambda x: "/".join(sorted(x.unique())))
+)
+
+updated_ram = cpu_df.index.map(ram_mapping).to_series()
+updated_ram.index = cpu_df.index
+cpu_df["ramType"] = updated_ram.fillna(cpu_df["ramType"])
+
+cpu_df.to_csv("data/CPU.csv", index=False)
+
+# TODO Add filter by type of DDR
+# TODO PSU data check id - 288 289 290

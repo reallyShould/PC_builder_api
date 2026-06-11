@@ -37,11 +37,35 @@ def build():
         return jsonify({'error': 'No message provided'}), 400
 
 
-
-@app.route("/all_mb", methods=['GET']) # TODO Add all components
+@app.route("/all_mb", methods=['GET'])
 def all_mb():
     c = conf.Configurator()
-    return c.getNamesMB()
+    return c.getNamesALL("mb")
+
+@app.route("/all_cpu", methods=['GET'])
+def all_cpu():
+    c = conf.Configurator()
+    return c.getNamesALL("cpu")
+
+@app.route("/all_gpu", methods=['GET'])
+def all_gpu():
+    c = conf.Configurator()
+    return c.getNamesALL("gpu")
+
+@app.route("/all_psu", methods=['GET'])
+def all_psu():
+    c = conf.Configurator()
+    return c.getNamesALL("psu")
+
+@app.route("/all_ram", methods=['GET'])
+def all_ram():
+    c = conf.Configurator()
+    return c.getNamesALL("ram")
+
+@app.route("/all_rom", methods=['GET'])
+def all_rom():
+    c = conf.Configurator()
+    return c.getNamesALL("rom")
 
 
 @app.route("/configurator", methods=["GET"]) # TODO Remember why this is needed
@@ -62,7 +86,6 @@ def configurator():
 def filterMB():
     data = request.get_json()
     data = {} if not data else dict(data)
-
     c = conf.Configurator(data)
     return jsonify(c.getFiltredMB())
 
@@ -76,10 +99,12 @@ def filterCPU():
     return jsonify(c.getFiltredCPU())
 
 
-@app.route("/filter_ram", methods=["GET"]) #TODO Test it
+@app.route("/filter_ram", methods=["GET"])
 def filterRAM():
     data = request.get_json()
     data = {} if not data else dict(data)
+
+    # TODO RAM by CPU not work, fix
 
     c = conf.Configurator(data)
     return jsonify(c.getFiltredRAM())

@@ -87,12 +87,14 @@ class Build:
                 randomTMP -= 1
         else:
             cpu = to_price_CPU.head(1)
-        try:
-            cpu = cpu.drop(columns='Unnamed: 0')
-        except:
-            pass
+
+        # try:
+        #     cpu = cpu.drop(columns='Unnamed: 0')
+        # except:
+        #     pass
         
-        self.cpu = Cpu(name=cpu['name'].values[0],
+        self.cpu = Cpu(id=cpu['id'].values[0],
+                       name=cpu['name'].values[0],
                        price=cpu['price'].values[0], 
                        mark=cpu['cpuMark'].values[0], 
                        tdp=cpu['TDP'].values[0], 
@@ -106,13 +108,14 @@ class Build:
         to_price_MB = to_price_MB.sort_values('price', ascending=False)
 
         mb = to_price_MB.head(1)
-        print(mb.head())
-        try:
-            cpu = cpu.drop(columns='Unnamed: 0')
-        except:
-            pass
         
-        self.motherboard = Motherboard(name=mb['name'].values[0],
+        # try:
+        #     cpu = cpu.drop(columns='Unnamed: 0')
+        # except:
+        #     pass
+        
+        self.motherboard = Motherboard(id=mb['id'].values[0],
+                                       name=mb['name'].values[0],
                                        formFactor= mb['formFactor'].values[0],
                                        socket= mb['socket'].values[0],
                                        chipset= mb['chipset'].values[0],
@@ -146,7 +149,8 @@ class Build:
             gpu = gpu.drop(columns='Unnamed: 0')
         except:
             pass
-        self.gpu = Gpu(name=gpu['name'].values[0],
+        self.gpu = Gpu(id=gpu['id'].values[0],
+                       name=gpu['name'].values[0],
                        price=gpu['price'].values[0], 
                        mark3D=gpu['G3Dmark'].values[0], 
                        mark2D=gpu['G2Dmark'].values[0], 
@@ -168,28 +172,17 @@ class Build:
         to_price_ROM.sort_values('driveValue')
 
         rom = to_price_ROM.head(1)
-        try:
-            cpu = cpu.drop(columns='Unnamed: 0')
-        except:
-            pass
-        if not dbl:
-            self.rom = Rom(name=rom['name'].values[0],
-                        type=rom['type'].values[0],
-                        capacity=rom['diskCapacity'].values[0],
-                        mark=rom['diskMark'].values[0],
-                        rank=rom['rank'].values[0],
-                        price=rom['price'].values[0])
-        elif dbl:
-            self.rom = Rom(name=rom['name'].values[0],
-                        type=rom['type'].values[0],
-                        capacity=rom['diskCapacity'].values[0],
-                        mark=rom['diskMark'].values[0],
-                        rank=rom['rank'].values[0],
-                        price=rom['price'].values[0])
-        else:
-            print('Что то пошло не так') #TODO Check it
 
-    def getTDP(self):
+        self.rom = Rom(id=rom['id'].values[0],
+                       name=rom['name'].values[0],
+                       type=rom['type'].values[0],
+                       capacity=rom['diskCapacity'].values[0],
+                       mark=rom['diskMark'].values[0],
+                       rank=rom['rank'].values[0],
+                       price=rom['price'].values[0])
+
+
+    def getTDP(self): # TODO Fix
         open(f'{os.getcwd()}\\userdata\\{self.ID}\\TDP.txt', 'a+').write(str(self.cpu.tdp + self.gpu.tdp + 400))
 
     def getPSU(self):
@@ -205,7 +198,8 @@ class Build:
 
         psu = to_price_PSU.head(1)
 
-        self.psu = Psu(name=psu['name'].values[0],
+        self.psu = Psu(id=psu['id'].values[0],
+                       name=psu['name'].values[0],
                        formFactor=psu['formFactor'].values[0],
                        power=psu['power'].values[0],
                        fan=psu['fan'].values[0],
@@ -231,16 +225,17 @@ class Build:
                 if ram['price'].values[0]*2 < self.ram_price[1] + remainder/2:
                     print(ram['price'].values[0]*2)
                     print(self.ram_price[1] + remainder/2)
-                    self.ram = Ram(name=ram['name'].values[0],
-                        count=ram['count'].values[0]*2,
-                        capacity=ram['capacity'].values[0],
-                        freq=ram['freq'].values[0],
-                        timings=ram['timings'].values[0],
-                        formFactor=ram['formFactor'].values[0],
-                        type=ram['type'].values[0],
-                        price=ram['price'].values[0]*2
-                        )
-                    return 0;
+                    self.ram = Ram(id=ram['id'].values[0],
+                                   name=ram['name'].values[0],
+                                   count=ram['count'].values[0]*2,
+                                   capacity=ram['capacity'].values[0],
+                                   freq=ram['freq'].values[0],
+                                   timings=ram['timings'].values[0],
+                                   formFactor=ram['formFactor'].values[0],
+                                   type=ram['type'].values[0],
+                                   price=ram['price'].values[0]*2
+                                   )
+                    return 0
                 else:
                     to_price_RAM = dfRAM[(dfRAM['price'] > self.ram_price[0]) & (dfRAM['price'] < self.ram_price[1]) & (dfRAM['type'] == self.motherboard.ramType)]
             elif len(ram) == 0 and self.motherboard.ramSlots == 2:
@@ -253,7 +248,8 @@ class Build:
         ram = to_price_RAM.head(1)
         print(ram)
         
-        self.ram = Ram(name=ram['name'].values[0],
+        self.ram = Ram(id=ram['id'].values[0],
+                       name=ram['name'].values[0],
                        count=ram['count'].values[0],
                        capacity=ram['capacity'].values[0],
                        freq=ram['freq'].values[0],
@@ -267,6 +263,7 @@ class Build:
         pc_price = round(float(self.cpu.price + self.gpu.price + self.motherboard.price + self.rom.price + self.psu.price + self.ram.price), 2)
         return {
             "cpu": {
+                "id": int(self.cpu.id),
                 "name": self.cpu.name,
                 "socket": self.cpu.socket,
                 "cores": int(self.cpu.cores),
@@ -275,6 +272,7 @@ class Build:
                 "price": float(self.cpu.price)
             },
             "gpu": {
+                "id": int(self.gpu.id),
                 "name": self.gpu.name,
                 "tdp": int(self.gpu.tdp),
                 "bench3d": int(self.gpu.mark3D),
@@ -282,6 +280,7 @@ class Build:
                 "price": float(self.gpu.price)
             },
             "motherboard": {
+                "id": int(self.motherboard.id),
                 "name": self.motherboard.name,
                 "form": self.motherboard.formFactor,
                 "socket": self.motherboard.socket,
@@ -294,6 +293,7 @@ class Build:
                 "price": float(self.motherboard.price)
             },
             "ram": {
+                "id": int(self.ram.id),
                 "name": self.ram.name,
                 "type": self.ram.type,
                 "count": int(self.ram.count),
@@ -304,6 +304,7 @@ class Build:
                 "price": float(self.ram.price)       
             },
             "rom": {
+                "id": int(self.rom.id),
                 "name": self.rom.name,
                 "type": self.rom.type,
                 "capacity": int(self.rom.capacity),  
@@ -311,6 +312,7 @@ class Build:
                 "price": float(self.rom.price)       
             },
             "psu": {
+                "id": int(self.psu.id),
                 "name": self.psu.name,
                 "form": self.psu.formFactor,
                 "power": int(self.psu.power),        
@@ -344,7 +346,8 @@ class Build:
     
 
 class Motherboard:
-    def __init__(self, name=None, formFactor=None, socket=None, chipset=None, ramType=None, ramSlots=0, ramFreq=0, maxRam=0, powerPin=None, price=0, category=None):
+    def __init__(self, id=None, name=None, formFactor=None, socket=None, chipset=None, ramType=None, ramSlots=0, ramFreq=0, maxRam=0, powerPin=None, price=0, category=None):
+        self.id = id
         self.name = name
         self.formFactor = formFactor
         self.socket = socket
@@ -359,7 +362,8 @@ class Motherboard:
 
 
 class Cpu:
-    def __init__(self, name=None, price=0, mark=0, tdp=0, cores=0, socket=None, category=None):
+    def __init__(self, id=None, name=None, price=0, mark=0, tdp=0, cores=0, socket=None, category=None):
+        self.id = id
         self.name = name
         self.price = price
         self.mark = mark
@@ -370,7 +374,8 @@ class Cpu:
 
 
 class Gpu:
-    def __init__(self, name=None, price=0, mark3D=0, mark2D=0, tdp=0, category=None):
+    def __init__(self, id=None, name=None, price=0, mark3D=0, mark2D=0, tdp=0, category=None):
+        self.id = id
         self.name = name
         self.price = price
         self.mark3D = mark3D
@@ -380,7 +385,8 @@ class Gpu:
 
 
 class Rom:
-    def __init__(self, name=None, type=None, capacity=0, price=0, mark=0, rank=0, count=1):
+    def __init__(self, id=None, name=None, type=None, capacity=0, price=0, mark=0, rank=0, count=1):
+        self.id = id
         self.name = name
         self.type = type
         self.capacity = capacity
@@ -391,7 +397,8 @@ class Rom:
     
 
 class Psu:
-    def __init__(self, name=None, formFactor=None, power=None, fan=None, pin=None, gpuPin=None, price=None):
+    def __init__(self, id=None, name=None, formFactor=None, power=None, fan=None, pin=None, gpuPin=None, price=None):
+        self.id = id
         self.name = name
         self.formFactor = formFactor
         self.power = power
@@ -401,7 +408,8 @@ class Psu:
         self.price = price
 
 class Ram:
-    def __init__(self, name=None, count=None, capacity=None, freq=None, timings=None, formFactor=None, type=None, price=None):
+    def __init__(self, id=None, name=None, count=None, capacity=None, freq=None, timings=None, formFactor=None, type=None, price=None):
+        self.id = id
         self.name = name
         self.count = count
         self.capacity = capacity

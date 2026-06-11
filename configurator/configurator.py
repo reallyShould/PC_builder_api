@@ -20,12 +20,20 @@ class Configurator:
             self.filtred = False
         print(jsonify(self.req))
 
-    def getNamesMB(self):
-        out_json = {}
-        mb_data_len = len(cons.mb_data)
-        for i in range(mb_data_len):
-            out_json[i] = cons.mb_data["name"][i]
-        return jsonify(out_json)
+    def getNamesALL(self, dataset):
+        data_map = {
+            "cpu": cons.cpu_data,
+            "gpu": cons.gpu_data,
+            "mb": cons.mb_data,
+            "ram": cons.ram_data,
+            "psu": cons.psu_data,
+            "rom": cons.rom_data
+        }
+        try:
+            out_json = {i: name for i, name in enumerate(data_map[dataset]["name"])}
+            return jsonify(out_json)
+        except:
+            return jsonify({"error": "Неверные данные", "status": 400}), 400
     
     def setup(self):
         if self.req["MB"] != "None":
@@ -42,12 +50,15 @@ class Configurator:
     def setMB(self):
         mb = cons.mb_data.loc[cons.mb_data["id"] == self.req["MB"]]
         self.filters["socket"] = mb["socket"].values[0]
-        self.filters["ram_type"] = mb["ramType"].values[0]
+        if self.filters["ram_type"] == "None":
+            self.filters["ram_type"] = mb["ramType"].values[0]
         self.filters["power_pin"] = mb["powerPin"].values[0]
 
     def setCPU(self):
         cpu = cons.cpu_data.loc[cons.cpu_data["id"] == self.req["CPU"]]
         self.filters["socket"] = cpu["socket"].values[0]
+        if self.filters["ram_type"] == "None":
+            self.filters["ram_type"] = cpu["ramType"].values[0]
         self.filters["TDP"] += int(cpu["TDP"].values[0])
 
     def setGPU(self):
@@ -56,8 +67,8 @@ class Configurator:
 
     def setRAM(self):
         ram = cons.ram_data.loc[cons.ram_data["id"] == self.req["RAM"]]
-        self.filters["ram_type"] = ram["type"].values[0]
-
+        if self.filters["ram_type"] == "None":
+            self.filters["ram_type"] = ram["type"].values[0]
     def setPSU(self):
         psu = cons.psu_data.loc[cons.psu_data["id"] == self.req["PSU"]]
         self.filters["TDP"] -= int(psu["power"].values[0])
@@ -75,6 +86,7 @@ class Configurator:
         else:
             tmp_data = cons.mb_data
 
+        # TODO Style fix
     
         response = {}
         for i in range(len(tmp_data)):
@@ -82,29 +94,40 @@ class Configurator:
         return response
 
     def getFiltredCPU(self):
-        if self.filters["socket"] != "None":
-            tmp_data = cons.cpu_data.loc[(cons.cpu_data["socket"] == self.filters["socket"])]
-        else:
-            tmp_data = cons.cpu_data
+        socket = self.filters.get("socket")
+        ram_type = self.filters.get("ram_type")
 
-        response = {}
-        for i in range(len(tmp_data)):
-            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
-        return response
+        mask = pd.Series(True, index=cons.cpu_data.index)
+
+        if socket not in (None, "None"):
+            mask &= (cons.cpu_data["socket"] == socket)
+
+        if ram_type not in (None, "None"):
+            if ram_type == "DDR4/DDR5":
+                mask &= cons.cpu_data["ramType"].isin(["DDR4", "DDR5", "DDR4/DDR5"])
+            else:
+                mask &= (cons.cpu_data["ramType"] == ram_type) | (cons.cpu_data["ramType"] == "DDR4/DDR5")
+
+        tmp_data = cons.cpu_data.loc[mask]
+        return dict(zip(tmp_data["id"].astype(int), tmp_data["name"])) # TODO copy style to other
 
     def getFiltredRAM(self):
-        if self.filters["ram_type"] != "None":
-            tmp_data = cons.ram_data.loc[(cons.ram_data["type"] == self.filters["ram_type"])]
-        else:
-            tmp_data = cons.ram_data
+        ram_type = self.filters.get("ram_type")
 
-        response = {}
-        for i in range(len(tmp_data)):
-            response[int(tmp_data["id"].values[i])] = tmp_data["name"].values[i]
-        return response
+        mask = pd.Series(True, index=cons.ram_data.index)
+
+        if ram_type not in (None, "None"):
+            if ram_type == "DDR4/DDR5":
+                mask &= cons.ram_data["type"].isin(["DDR4", "DDR5"])
+            else:
+                mask &= (cons.ram_data["type"] == ram_type)
+        tmp_data = cons.ram_data.loc[mask]
+        return dict(zip(tmp_data["id"].astype(int), tmp_data["name"]))
     
     def getFiltredGPU(self):
         tmp_data = cons.gpu_data
+
+        # TODO Test
 
         response = {}
         for i in range(len(tmp_data)):
@@ -113,6 +136,8 @@ class Configurator:
 
     def getFiltredPSU(self):
         tmp_data = cons.psu_data.loc[(cons.psu_data["power"] >=  self.filters["TDP"])]
+
+        # TODO Test
 
         response = {}
         for i in range(len(tmp_data)):
